@@ -8,6 +8,25 @@ import {
 import type { RouteMetrics, CalculatorConfig, ActivityTypeValue } from './calculator'
 import './App.css'
 
+/**
+ * Get CSS class name for activity type rows in the schedule table.
+ * Maps activity types to consistent class names for styling.
+ */
+function getActivityClassName(activityType: ActivityTypeValue): string {
+  switch (activityType) {
+    case ActivityType.LOADING:
+      return 'activity-loading'
+    case ActivityType.DRIVING:
+      return 'activity-driving'
+    case ActivityType.BREAK:
+      return 'activity-break'
+    case ActivityType.UNLOADING:
+      return 'activity-unloading'
+    default:
+      return ''
+  }
+}
+
 function App() {
   // Input state
   const [totalMiles, setTotalMiles] = useState<string>('500')
@@ -272,7 +291,7 @@ function App() {
                 </thead>
                 <tbody>
                   {metrics.activities.map((activity, index) => (
-                    <tr key={index} className={`activity-${activity.activityType.toLowerCase().replace(/[^a-z]/g, '-')}`}>
+                    <tr key={index} className={getActivityClassName(activity.activityType)}>
                       <td>{index + 1}</td>
                       <td>
                         <span className="activity-icon">{getActivityIcon(activity.activityType)}</span>
@@ -293,9 +312,24 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>
-          <strong>Constraints:</strong> Average speed {speedMph} mph | Max driving {maxDrivingHours} hrs | Break {breakDuration} hrs | Load/Unload {loadingDuration}/{unloadingDuration} hrs
-        </p>
+        <dl className="constraints-list" aria-label="Current calculation constraints">
+          <div className="constraint-item">
+            <dt>Average Speed</dt>
+            <dd>{speedMph} mph</dd>
+          </div>
+          <div className="constraint-item">
+            <dt>Max Driving</dt>
+            <dd>{maxDrivingHours} hrs</dd>
+          </div>
+          <div className="constraint-item">
+            <dt>Break Duration</dt>
+            <dd>{breakDuration} hrs</dd>
+          </div>
+          <div className="constraint-item">
+            <dt>Load/Unload</dt>
+            <dd>{loadingDuration}/{unloadingDuration} hrs</dd>
+          </div>
+        </dl>
         <p className="copyright">Route Planner &copy; 2024</p>
       </footer>
     </div>

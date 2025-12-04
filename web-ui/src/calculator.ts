@@ -52,9 +52,21 @@ export const DEFAULT_CONFIG: CalculatorConfig = {
 
 /**
  * Format hours as HH:MM string.
+ * Handles edge cases like negative numbers and very large values.
  */
 export function formatTime(hours: number): string {
-  const totalMinutes = Math.floor(hours * 60);
+  // Handle invalid input
+  if (!Number.isFinite(hours)) {
+    return '00:00';
+  }
+  
+  // Handle negative hours by treating as absolute value
+  const absHours = Math.abs(hours);
+  
+  // Cap at reasonable maximum (999 hours)
+  const cappedHours = Math.min(absHours, 999);
+  
+  const totalMinutes = Math.floor(cappedHours * 60);
   const hrs = Math.floor(totalMinutes / 60);
   const mins = totalMinutes % 60;
   return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;

@@ -305,7 +305,7 @@
   border-left: 4px solid #10b981;
 }
 
-.activity-break--10-hour-rest- td:first-child {
+.activity-break td:first-child {
   border-left: 4px solid #6366f1;
 }
 
@@ -318,12 +318,31 @@
   color: var(--text-muted);
 }
 
-.footer p {
-  margin: 0.5rem 0;
+.constraints-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 2rem;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+}
+
+.constraint-item {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.constraints-list dt {
+  font-weight: 600;
+}
+
+.constraints-list dd {
+  margin: 0;
 }
 
 .copyright {
   opacity: 0.7;
+  margin: 0.5rem 0 0 0;
 }
 
 /* CSS Variables for theming */
