@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Node.js / Web UI
+node_modules/
+web-ui/dist/
+web-ui/node_modules/
+*.local
