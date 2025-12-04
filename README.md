@@ -8,8 +8,114 @@ A freight truck route metrics calculator that calculates time slot estimates and
 - Generate driver activity schedules with time slots
 - Account for driving hours regulations (Hours of Service)
 - Handle deadhead (empty) miles vs loaded miles
+- **Web UI** for easy access via browser (deployable to GitHub Pages)
 
-## Installation
+## Web UI
+
+The Route Planner includes a responsive single-page web interface that provides all the functionality of the command-line tool in an easy-to-use browser-based format.
+
+### Live Demo
+
+Visit the live demo at: `https://<username>.github.io/Route-Planner/`
+
+### Web UI Features
+
+- Input route parameters (total miles, deadhead miles, remaining hours)
+- Advanced settings for customizing calculator parameters (speed, break duration, etc.)
+- Visual display of route metrics summary
+- Detailed driver activity schedule table
+- Responsive design that works on desktop and mobile devices
+- Dark mode support
+
+### Running the Web UI Locally
+
+```bash
+cd web-ui
+npm install
+npm run dev
+```
+
+Then open http://localhost:5173/Route-Planner/ in your browser.
+
+### Building for Production
+
+```bash
+cd web-ui
+npm run build
+```
+
+The built files will be in the `web-ui/dist` directory.
+
+## Deploying to GitHub Pages
+
+To deploy the web UI to GitHub Pages:
+
+### Option 1: Manual Deployment
+
+1. Build the web UI:
+   ```bash
+   cd web-ui
+   npm install
+   npm run build
+   ```
+
+2. Copy the contents of `web-ui/dist` to the `gh-pages` branch or configure GitHub Pages to serve from the `web-ui/dist` folder.
+
+### Option 2: GitHub Actions (Recommended)
+
+Create a `.github/workflows/deploy.yml` file:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web-ui/package-lock.json
+      - name: Install dependencies
+        run: cd web-ui && npm ci
+      - name: Build
+        run: cd web-ui && npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-ui/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+Then enable GitHub Pages in your repository settings and select "GitHub Actions" as the source.
+
+## Installation (Python CLI)
 
 ```bash
 pip install -e .
@@ -63,7 +169,7 @@ print(f"Total break time: {metrics.total_break_time} hours")
 
 ## Constraints
 
-The calculator uses the following trucking industry constraints:
+The calculator uses the following trucking industry constraints (configurable in the web UI):
 
 - **Average driving speed**: 55 mph
 - **Maximum driving time**: 11 hours before a mandatory break
@@ -103,6 +209,24 @@ DRIVER ACTIVITY SCHEDULE
 ```bash
 pytest tests/ -v
 ```
+
+## Contributing
+
+### Web UI Development
+
+The web UI is built with:
+- React 19 + TypeScript
+- Vite for build tooling
+- CSS with responsive design and dark mode support
+
+To contribute to the web UI:
+
+1. Navigate to the web-ui directory: `cd web-ui`
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+4. Make your changes
+5. Run linting: `npm run lint`
+6. Build to verify: `npm run build`
 
 ## License
 
